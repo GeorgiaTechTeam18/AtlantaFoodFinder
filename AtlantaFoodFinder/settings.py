@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,16 +77,12 @@ WSGI_APPLICATION = 'AtlantaFoodFinder.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':'atlfoodfinder',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5434',
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('POSTGRESQL_CONNECTION_STRING', 'postgres://postgres:postgres@localhost:5434/atlfoodfinder'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    ),
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
