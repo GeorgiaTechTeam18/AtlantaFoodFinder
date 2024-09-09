@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% block title %}Title{% endblock %}</title>
 </head>
 <body>
-
+        <button type="submit"><a href="UserAuth/register.html">Register </a></button>
+        <button type="submit"><a href="login.html">Log In</a></button>
+        <button type="submit"><a href="logout.html">Log In</a></button>
+        {%block body%}{% endblock %}
+    
 </body>
 </html>
