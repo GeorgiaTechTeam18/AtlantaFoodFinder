@@ -5,9 +5,13 @@
     <title>{% block title %}Title{% endblock %}</title>
 </head>
 <body>
-        <button type="submit"><a href="UserAuth/register.html">Register </a></button>
-        <button type="submit"><a href="login.html">Log In</a></button>
-        <button type="submit"><a href="logout.html">Log In</a></button>
+            <a href="{% url 'register' %}">Register</a>
+        <button type="button">
+            <a href="{% url 'signin' %}">Log in</a>
+        </button>
+        <button type="button">
+            <a href="{% url 'signout' %}">Log out</a>
+        </button>
         {%block body%}{% endblock %}
     
 </body>
