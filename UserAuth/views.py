@@ -20,6 +20,7 @@ def register(request):
         confirm_password = request.POST['password2']
 
 
+
         user = User.objects.create_user(username, email, password)
 
         user.save()
@@ -52,5 +53,7 @@ def signin(request):
     return render(request, 'UserAuth/login.html')
 
 def signout(request):
+    logout(request)
+    messages.success(request, 'You have been logged out.')
     return render(request,'UserAuth/logout.html')
 
