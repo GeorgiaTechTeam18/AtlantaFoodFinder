@@ -1,0 +1,27 @@
+{% extends 'UserAuth/base.html' %}
+{% block body %}
+    <h3>Create an ATL Food Finder Account!</h3>
+    <form action='{% url 'register' %}' method="post">
+    {% csrf_token %}
+        <label for="">First Name</label>
+        <input type="text" id="firstname" name="firstname" required><br>
+    
+        <label for="">Last Name</label>
+        <input type="text" id="lastname" name="lastname" required><br>
+        
+        <label for="">Username</label>
+        <input type="text" id="username" name="username" required><br>
+        
+    
+        <label for="">Email</label>
+        <input type="email" id="email" name="email" required><br>
+    
+        <label for="">Password</label>
+        <input type="password" id="password" name="password" required><br>
+    
+        <label for="">Confirm Password</label>
+        <input type="password" id="password2" name="password2" required ><br>
+    
+        <button type="submit" name="register" id="register">Register</button>
+    </form>
+{% endblock %}
