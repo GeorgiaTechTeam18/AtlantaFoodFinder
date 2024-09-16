@@ -1,0 +1,7 @@
+ {% for restaurant in searchResults.places %}
+    <li><a href="details/{{ restaurant.id }}"><div>{{ restaurant.displayName.text }}</div> <div>{{ restaurant.formattedAddress }}</div></a></li>
+{% endfor %}
+
+<div class="newToken" style="display: none">
+    newPageTokenToBeUpdated{{ searchResults.nextPageToken }}newPageTokenToBeUpdated
+</div>

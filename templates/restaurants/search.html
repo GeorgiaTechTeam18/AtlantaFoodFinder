@@ -7,9 +7,32 @@
         <input type="submit" value="Submit">
     </form>
 {#    {{ searchResults }}#}
-    <ul>
+    <ul id="searchResultsList">
         {% for restaurant in searchResults.places %}
             <li><a href="details/{{ restaurant.id }}"><div>{{ restaurant.displayName.text }}</div> <div>{{ restaurant.formattedAddress }}</div></a></li>
         {% endfor %}
     </ul>
+    <button style="display: none" id="loadMore" onclick="loadMore()">
+    More
+    </button>
+    <script>
+    let pageToken = "{{ searchResults.nextPageToken }}";
+    if(pageToken.length !== 0){
+        document.getElementById("loadMore").style.display = "block"
+    }
+    function loadMore() {
+        console.log(pageToken)
+        fetch("/restaurants/?q={{ query }}&pageToken=" + pageToken)
+            .then(x => x.text())
+            .then(x => {
+                document.getElementById("searchResultsList").innerHTML += x
+                
+                pageToken = x.split("newPageTokenToBeUpdated")[1].trim()
+                console.log(pageToken.length)
+                if(pageToken.length === 0){
+                    document.getElementById("loadMore").style.display = "none"
+                }
+            })
+    }
+    </script>
 {% endblock %}
