@@ -6,10 +6,10 @@
         <input type="text" id="q" name="q" ><br>
         <input type="submit" value="Submit">
     </form>
-{#    {{ searchResults }}#}
+    {{ searchResults }}
     <ul>
         {% for restaurant in searchResults.places %}
-            <li><a href="details/{{ restaurant.id }}"><div>{{ restaurant.displayName.text }}</div> <div>{{ restaurant.formattedAddress }}</div></a></li>
+            <li><a href="details/{{ restaurant.id }}"><div>{{ restaurant.displayName.text }}{{ restaurant.priceLevel }}</div> <div>{{ restaurant.formattedAddress }}</div> <div>{{ restaurant.shortFormattedAddress }}</div></a></li>
         {% endfor %}
     </ul>
 {% endblock %}

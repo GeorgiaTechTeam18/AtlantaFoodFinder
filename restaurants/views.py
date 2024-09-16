@@ -26,7 +26,7 @@ def index(request):
     }, headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.priceLevel',
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.shortFormattedAddress,places.priceLevel',
     })
     context = {
         'searchResults': searchResults.json()
