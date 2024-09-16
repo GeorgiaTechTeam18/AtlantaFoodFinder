@@ -1,0 +1,15 @@
+{% extends 'UserAuth/base.html' %}
+
+{% block body %}
+    <form method="get">
+        <label for="q">Restaurant Search</label><br>
+        <input type="text" id="q" name="q" ><br>
+        <input type="submit" value="Submit">
+    </form>
+{#    {{ searchResults }}#}
+    <ul>
+        {% for restaurant in searchResults.places %}
+            <li><a href="details/{{ restaurant.id }}"><div>{{ restaurant.displayName.text }}</div> <div>{{ restaurant.formattedAddress }}</div></a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
