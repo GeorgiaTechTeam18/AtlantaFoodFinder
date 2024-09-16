@@ -19,6 +19,17 @@ def register(request):
         password = request.POST['password']
         confirm_password = request.POST['password2']
 
+        if password != confirm_password:
+            messages.error(request, 'Passwords must match')
+            return redirect('register')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already taken')
+            return redirect('register')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already taken')
+            return redirect('register')
 
 
         user = User.objects.create_user(username, email, password)
