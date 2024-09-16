@@ -17,7 +17,18 @@ def index(request):
     if (searchQuery == None):
         return HttpResponse(page)
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
-        "textQuery" : searchQuery
+        "textQuery" : searchQuery,
+        "locationBias": {
+            "circle": {
+                "center": {
+                    "latitude": 33.77457,
+                    "longitude": -84.38907
+                },
+                "radius": 500.0
+
+            }
+        },
+        "includedType": "restaurant",
     }, headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
