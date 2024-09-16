@@ -21,6 +21,23 @@ def index(request):
     }, headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-        'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel',
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.priceLevel',
     })
     return HttpResponse(page + "You searched for: " + searchQuery + "\nAPI: " + searchResults.text)
+
+# based on https://developers.google.com/maps/documentation/places/web-service/place-details
+def get_restaurant_details(place_id):
+    detailsResult = requests.get(f'https://places.googleapis.com/v1/places/{place_id}',
+    headers={
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
+        'X-Goog-FieldMask': 'id,displayName',
+    })
+    return detailsResult.json()
+
+def restaurant_detail_view(request, place_id):
+    details = get_restaurant_details(place_id)
+    context = {
+        'restaurant': details
+    }
+    return render(request, 'restaurants/detail.html', context)

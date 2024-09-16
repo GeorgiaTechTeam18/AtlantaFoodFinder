@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'UserAuth',
+    'restaurants'
 ]
 
 MIDDLEWARE = [
@@ -53,6 +55,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'AtlantaFoodFinder.urls'
+
+AUTH_USER_MODEL = 'UserAuth.User'
 
 TEMPLATES = [
     {
