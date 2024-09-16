@@ -1,44 +1,15 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import requests
 import os
 from dotenv import load_dotenv
+from django.template.loader import render_to_string
 load_dotenv()
 
-# Create your views here.
-def index(request):
-    pageToken = request.GET.get('pageToken', None)
-    searchQuery = request.GET.get('q', None)
-    if (searchQuery == None):
-        return render(request, 'restaurants/search.html')
-    if (pageToken != None):
-        searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
-            "pageToken": pageToken,
-            "textQuery": searchQuery,
-            "locationBias": {
-                "circle": {
-                    "center": {
-                        "latitude": 33.77457,
-                        "longitude": -84.38907
-                    },
-                    "radius": 500.0
-
-                }
-            },
-            "includedType": "restaurant",
-        }, headers={
-            "Content-Type": "application/json",
-            "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-            'X-Goog-FieldMask': 'nextPageToken,places.id,places.displayName,places.formattedAddress,places.priceLevel',
-        })
-        context = {
-            "query": searchQuery,
-            'searchResults': searchResults.json(),
-        }
-        return render(request, 'restaurants/searchNewPage.html', context)
-
+def getPlacesSearch(query, pagetoken = ""):
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
-        "textQuery": searchQuery,
+        "pageToken": pagetoken,
+        "textQuery": query,
         "locationBias": {
             "circle": {
                 "center": {
@@ -55,9 +26,28 @@ def index(request):
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
         'X-Goog-FieldMask': 'nextPageToken,places.id,places.displayName,places.formattedAddress,places.priceLevel',
     })
+    return searchResults.json()
+
+def index(request):
+    pageToken = request.GET.get('pageToken', None)
+    searchQuery = request.GET.get('q', None)
+    if (searchQuery == None):
+        return render(request, 'restaurants/search.html')
+    if (pageToken != None):
+        searchResults = getPlacesSearch(searchQuery, pageToken)
+        context = {
+            "query": searchQuery,
+            "searchResults": searchResults,
+        }
+        additionalHtml = render_to_string('restaurants/searchResultsItems.html', context)
+        return JsonResponse({
+            "additionalHtml":additionalHtml,
+            "nextPageToken":searchResults.get("nextPageToken", "")
+        })
+    searchResults = getPlacesSearch(searchQuery)
     context = {
         "query": searchQuery,
-        'searchResults': searchResults.json(),
+        "searchResults": searchResults,
     }
     return render(request, 'restaurants/search.html', context)
 

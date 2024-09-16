@@ -6,12 +6,9 @@
         <input type="text" id="q" name="q" ><br>
         <input type="submit" value="Submit">
     </form>
-{#    {{ searchResults }}#}
-    <ul id="searchResultsList">
-        {% for restaurant in searchResults.places %}
-            <li><a href="details/{{ restaurant.id }}"><div>{{ restaurant.displayName.text }}{{ restaurant.priceLevel }}</div> <div>{{ restaurant.formattedAddress }}</div> <div>{{ restaurant.shortFormattedAddress }}</div></a></li>
-        {% endfor %}
-    </ul>
+    <ol id="searchResultsList">
+        {% include 'restaurants/searchResultsItems.html' %}
+    </ol>
     <button style="display: none" id="loadMore" onclick="loadMore()">
     More
     </button>
@@ -21,14 +18,11 @@
         document.getElementById("loadMore").style.display = "block"
     }
     function loadMore() {
-        console.log(pageToken)
         fetch("/restaurants/?q={{ query }}&pageToken=" + pageToken)
-            .then(x => x.text())
+            .then(x => x.json())
             .then(x => {
-                document.getElementById("searchResultsList").innerHTML += x
-
-                pageToken = x.split("newPageTokenToBeUpdated")[1].trim()
-                console.log(pageToken.length)
+                document.getElementById("searchResultsList").innerHTML += x.additionalHtml
+                pageToken = x.nextPageToken
                 if(pageToken.length === 0){
                     document.getElementById("loadMore").style.display = "none"
                 }
