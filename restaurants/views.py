@@ -8,14 +8,8 @@ load_dotenv()
 # Create your views here.
 def index(request):
     searchQuery = request.GET.get('q', None)
-    page = """
-    <form method="get">
-      <label for="q">Restaurant Search</label><br>
-      <input type="text" id="q" name="q" ><br>
-      <input type="submit" value="Submit">
-    </form>"""
     if (searchQuery == None):
-        return HttpResponse(page)
+        return render(request, 'restaurants/search.html')
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
         "textQuery" : searchQuery,
         "locationBias": {
@@ -34,7 +28,10 @@ def index(request):
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
         'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.priceLevel',
     })
-    return HttpResponse(page + "You searched for: " + searchQuery + "\nAPI: " + searchResults.text)
+    context = {
+        'searchResults': searchResults.json()
+    }
+    return render(request, 'restaurants/search.html', context)
 
 # based on https://developers.google.com/maps/documentation/places/web-service/place-details
 def get_restaurant_details(place_id):
