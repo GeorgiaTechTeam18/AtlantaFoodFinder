@@ -17,6 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from django.contrib import admin
+from django.urls import path, include
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('restaurants/', include('RestaurantSearch.urls')),  # Include RestaurantSearch URLs
+]
+
+INSTALLED_APPS = [
+    # other installed apps
+    'RestaurantSearch',
 ]

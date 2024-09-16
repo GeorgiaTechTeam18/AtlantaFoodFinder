@@ -77,13 +77,23 @@ WSGI_APPLICATION = 'AtlantaFoodFinder.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import dj_database_url
+import os
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('POSTGRESQL_CONNECTION_STRING', 'postgres://username:password@localhost:5434/atlfoodfinder'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    ),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',  # Adjust if using psycopg3 (you might use 'django.db.backends.postgresql_psycopg3')
+        'NAME': os.environ.get('DB_NAME', 'atlfoodfinder'),
+        'USER': os.environ.get('DB_USER', 'username'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'password'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
+        'CONN_MAX_AGE': 600,
+        'CONN_HEALTH_CHECKS': True,
+    }
 }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
