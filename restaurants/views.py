@@ -3,9 +3,7 @@ from django.http import HttpResponse
 import requests
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
-
 
 # Create your views here.
 def index(request):
@@ -63,17 +61,15 @@ def index(request):
     }
     return render(request, 'restaurants/search.html', context)
 
-
 # based on https://developers.google.com/maps/documentation/places/web-service/place-details
 def get_restaurant_details(place_id):
     detailsResult = requests.get(f'https://places.googleapis.com/v1/places/{place_id}',
-                                 headers={
-                                     "Content-Type": "application/json",
-                                     "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-                                     'X-Goog-FieldMask': 'id,displayName',
-                                 })
+    headers={
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
+        'X-Goog-FieldMask': 'id,displayName',
+    })
     return detailsResult.json()
-
 
 def restaurant_detail_view(request, place_id):
     details = get_restaurant_details(place_id)

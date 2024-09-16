@@ -9,7 +9,7 @@
 {#    {{ searchResults }}#}
     <ul id="searchResultsList">
         {% for restaurant in searchResults.places %}
-            <li><a href="details/{{ restaurant.id }}"><div>{{ restaurant.displayName.text }}</div> <div>{{ restaurant.formattedAddress }}</div></a></li>
+            <li><a href="details/{{ restaurant.id }}"><div>{{ restaurant.displayName.text }}{{ restaurant.priceLevel }}</div> <div>{{ restaurant.formattedAddress }}</div> <div>{{ restaurant.shortFormattedAddress }}</div></a></li>
         {% endfor %}
     </ul>
     <button style="display: none" id="loadMore" onclick="loadMore()">
@@ -26,7 +26,7 @@
             .then(x => x.text())
             .then(x => {
                 document.getElementById("searchResultsList").innerHTML += x
-                
+
                 pageToken = x.split("newPageTokenToBeUpdated")[1].trim()
                 console.log(pageToken.length)
                 if(pageToken.length === 0){
