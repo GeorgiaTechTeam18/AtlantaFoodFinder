@@ -21,24 +21,23 @@ def index(request):
     }, headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-        'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel',
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.priceLevel',
     })
     return HttpResponse(page + "You searched for: " + searchQuery + "\nAPI: " + searchResults.text)
 
+# based on https://developers.google.com/maps/documentation/places/web-service/place-details
 def get_restaurant_details(place_id):
-    api_key = 'PLACEHOLDER'
-    url = f'https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&key={api_key}'
-    response = requests.get(url)
-    return response.json()
+    detailsResult = requests.get(f'https://places.googleapis.com/v1/places/{place_id}',
+    headers={
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
+        'X-Goog-FieldMask': 'id,displayName',
+    })
+    return detailsResult.json()
 
 def restaurant_detail_view(request, place_id):
     details = get_restaurant_details(place_id)
     context = {
-        'name': details['result']['name'],
-        'address': details['result']['formatted_address'],
-        'phone': details['result'].get('formatted_phone_number', 'N/A'),
-        'cuisine': ', '.join(details['result'].get('types', [])),
-        'rating': details['result'].get('rating', 'N/A'),
-        'reviews': details['result'].get('reviews', [])
+        'restaurant': details
     }
     return render(request, 'restaurants/detail.html', context)
