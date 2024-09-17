@@ -10,6 +10,7 @@ def getPlacesSearch(query, pagetoken = ""):
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
         "pageToken": pagetoken,
         "textQuery": query,
+        "pageSize": 10,
         "locationBias": {
             "circle": {
                 "center": {
