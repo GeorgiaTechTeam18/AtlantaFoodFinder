@@ -29,7 +29,7 @@ def getPlacesSearch(query, pagetoken = ""):
     })
     return searchResults.json()
 
-def index(request):
+def resturantSearch(request):
     pageToken = request.GET.get('pageToken', None)
     searchQuery = request.GET.get('q', None)
     if (searchQuery == None):
