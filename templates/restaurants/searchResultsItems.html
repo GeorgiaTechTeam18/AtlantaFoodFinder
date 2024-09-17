@@ -1,3 +1,9 @@
 {% for restaurant in searchResults.places %}
-    <li><a href="details/{{ restaurant.id }}"><div>{{ restaurant.displayName.text }}{{ restaurant.priceLevel }}</div> <div>{{ restaurant.formattedAddress }}</div> <div>{{ restaurant.shortFormattedAddress }}</div></a></li>
+    <li>
+        <a href="details/{{ restaurant.id }}">
+            <div>{{ restaurant.displayName.text }}{{ restaurant.priceLevel }}</div>
+            <div>{{ restaurant.formattedAddress }}</div>
+            <div>{{ restaurant.shortFormattedAddress }}</div>
+        </a>
+    </li>
 {% endfor %}
