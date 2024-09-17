@@ -22,7 +22,7 @@
         function loadMore() {
             loadMoreButton.style.display = "none"
             loadingIndicator.style.display = "block"
-            fetch("/restaurants/?q={{ query }}&pageToken=" + pageToken)
+            fetch("{% url "restaurantSearch" %}?q={{ query }}&pageToken=" + pageToken)
                 .then(x => x.json())
                 .then(x => {
                     loadingIndicator.style.display = "none"
