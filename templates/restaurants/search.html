@@ -1,16 +1,21 @@
 {% extends 'UserAuth/base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'restaurants/style.css' %}">
+{% endblock %}
 {% block body %}
-    <form method="get">
+    <form class="searchForm" method="get">
         <label for="q">Restaurant Search</label>
         <br>
-        <input type="text" id="q" name="q">
-        <br>
-        <input type="submit" value="Submit">
+        <div class="searchInputContainer">
+            <input class="searchInput" type="text" id="q" name="q" value="{{ query }}">
+            <input type="submit" value="Submit">
+        </div>
     </form>
     <ol id="searchResultsList">
         {% include 'restaurants/searchResultsItems.html' %}
     </ol>
-    <button style="display: none" id="loadMore" onclick="loadMore()">More</button>
+    <button class="moreButton" style="display: none" id="loadMore" onclick="loadMore()">More</button>
     <div style="display: none" id="loadingIndicator">Loading...</div>
     <script>
         let pageToken = "{{ searchResults.nextPageToken }}";
