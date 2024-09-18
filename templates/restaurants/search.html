@@ -1,0 +1,37 @@
+{% extends 'UserAuth/base.html' %}
+{% block body %}
+    <form method="get">
+        <label for="q">Restaurant Search</label>
+        <br>
+        <input type="text" id="q" name="q">
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+    <ol id="searchResultsList">
+        {% include 'restaurants/searchResultsItems.html' %}
+    </ol>
+    <button style="display: none" id="loadMore" onclick="loadMore()">More</button>
+    <div style="display: none" id="loadingIndicator">Loading...</div>
+    <script>
+        let pageToken = "{{ searchResults.nextPageToken }}";
+        const loadMoreButton = document.getElementById("loadMore")
+        const loadingIndicator = document.getElementById("loadingIndicator")
+        if(pageToken.length !== 0){
+            loadMoreButton.style.display = "block"
+        }
+        function loadMore() {
+            loadMoreButton.style.display = "none"
+            loadingIndicator.style.display = "block"
+            fetch("{% url "restaurantSearch" %}?q={{ query }}&pageToken=" + pageToken)
+                .then(x => x.json())
+                .then(x => {
+                    loadingIndicator.style.display = "none"
+                    document.getElementById("searchResultsList").innerHTML += x.additionalHtml
+                    pageToken = x.nextPageToken
+                    if(pageToken.length !== 0){
+                        loadMoreButton.style.display = "block"
+                    }
+                })
+        }
+    </script>
+{% endblock %}
