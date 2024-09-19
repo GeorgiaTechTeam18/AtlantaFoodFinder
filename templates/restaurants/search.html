@@ -23,6 +23,9 @@
     </form>
     <button id="geoLocationButton">Search with current location</button>
     <span id="status"></span>
+    {% if query%}
+        <div>Showing results for {{ address }}</div>
+    {% endif %}
     <ol id="searchResultsList">
         {% include 'restaurants/searchResultsItems.html' %}
     </ol>

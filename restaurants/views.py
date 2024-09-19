@@ -8,8 +8,20 @@ from django.template.loader import render_to_string
 load_dotenv()
 milesPerMeters = 1609.34
 
+
+def getReverseGeocodedAddress(latLon):
+    try:
+        reverseGeocodeResult = requests.get('https://revgeocode.search.hereapi.com/v1/'
+                                            + 'revgeocode'
+                                            + f'?at={latLon[0]}%2C{latLon[1]}'
+                                            + '&limit=1&apiKey=' + os.getenv('HERE_API_KEY'))
+        reverseGeocodeResult = reverseGeocodeResult.json()
+        return reverseGeocodeResult["items"][0]["title"]
+    except:
+        return "issues getting address"
+
+
 def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5):
-    print(latLon, radius)
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
         "pageToken": pagetoken,
         "textQuery": query,
@@ -31,15 +43,20 @@ def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5)
     })
     return searchResults.json()
 
+
 def resturantSearch(request):
     pageToken = request.GET.get('pageToken', None)
     searchQuery = request.GET.get('q', None)
     latLon = (request.GET.get('lat', None), request.GET.get("lon", None))
-    if (latLon[0] != None):
+    address = "Atlanta"
+    if (latLon[0] != None and len(latLon[0]) > 0):
         try:
             latLon = (float(latLon[0]), float(latLon[1]))
         except:
             latLon = (33.77457, -84.38907)
+        address = getReverseGeocodedAddress(latLon)
+    else:
+        latLon = (33.77457, -84.38907)
 
     radius = request.GET.get('radius', "5")
     try:
@@ -61,9 +78,11 @@ def resturantSearch(request):
         })
     context = {
         "query": searchQuery,
+        "address": address,
         "searchResults": searchResults,
     }
     return render(request, 'restaurants/search.html', context)
+
 
 # based on https://developers.google.com/maps/documentation/places/web-service/place-details
 def get_restaurant_details(place_id):
@@ -74,6 +93,7 @@ def get_restaurant_details(place_id):
                                      'X-Goog-FieldMask': 'id,displayName',
                                  })
     return detailsResult.json()
+
 
 def restaurant_detail_view(request, place_id):
     details = get_restaurant_details(place_id)
