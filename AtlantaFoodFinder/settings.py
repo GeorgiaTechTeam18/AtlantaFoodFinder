@@ -140,4 +140,4 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_ID')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PW')
 
 DEFAULT_FROM_EMAIL = 'atlfoodfinder@outlook.com'
-VERIFICATION_SUCCESS_TEMPLATE = "UserAuth/registrationsuccess.html"
+LOGIN_URL = 'signin'
