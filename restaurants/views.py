@@ -87,17 +87,24 @@ def resturantSearch(request):
 # based on https://developers.google.com/maps/documentation/places/web-service/place-details
 def get_restaurant_details(place_id):
     detailsResult = requests.get(f'https://places.googleapis.com/v1/places/{place_id}',
-                                 headers={
-                                     "Content-Type": "application/json",
-                                     "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-                                     'X-Goog-FieldMask': 'id,displayName',
-                                 })
+    headers={
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
+        'X-Goog-FieldMask': 'types,nationalPhoneNumber,formattedAddress,rating,regularOpeningHours,'
+                            'userRatingCount,displayName,reviews,',
+    })
     return detailsResult.json()
-
 
 def restaurant_detail_view(request, place_id):
     details = get_restaurant_details(place_id)
     context = {
-        'restaurant': details
+        'cuisineType': details["types"][0],
+        'contactInformation': details["nationalPhoneNumber"],
+        'address': details["formattedAddress"],
+        'rating': details["rating"],
+        'openingHours': details["regularOpeningHours"]['weekdayDescriptions'],
+        'numRatings': details["userRatingCount"],
+        'name': details["displayName"]['text'],
+        'reviews': details["reviews"],
     }
     return render(request, 'restaurants/detail.html', context)
