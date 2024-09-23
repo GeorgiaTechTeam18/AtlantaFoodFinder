@@ -21,4 +21,5 @@ urlpatterns = [
     path("restaurants/", include("restaurants.urls"), name='restaurants'),
     path('admin/', admin.site.urls),
     path('', include('UserAuth.urls'), name='home'),
+    path('verification/', include('verify_email.urls')),
 ]
