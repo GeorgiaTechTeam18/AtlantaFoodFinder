@@ -1,5 +1,8 @@
 {% extends 'UserAuth/base.html' %}
-
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'restaurants/style.css' %}">
+{% endblock %}
 {% block body %}
     {{ restaurant }}
 {% endblock %}

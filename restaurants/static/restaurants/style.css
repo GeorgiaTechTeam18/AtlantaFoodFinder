@@ -1,0 +1,28 @@
+.searchInputContainer {
+    width: 100%;
+    display: flex;
+    gap: 1em;
+}
+
+.searchForm input[type=submit] {
+    padding: 20px;
+}
+
+.searchInput {
+  flex-grow: 2;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#searchResultsList {
+    padding-left: 2em;
+}
+
+.moreButton {
+    border-radius: 0px;
+    padding: 1em;
+    margin-top: 1em;
+}

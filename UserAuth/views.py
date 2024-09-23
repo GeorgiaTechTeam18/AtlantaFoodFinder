@@ -1,8 +1,10 @@
-from django.contrib.auth.context_processors import auth
+
+
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from .forms import RegistrationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
+from verify_email.email_handler import send_verification_email
 
 from django.contrib import messages
 
@@ -10,25 +12,23 @@ User = get_user_model()
 def home(request):
     return render(request,'UserAuth/index.html')
 
+
 def register(request):
     if request.method == 'POST':
-        first_name = request.POST['firstname']
-        last_name = request.POST['lastname']
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        confirm_password = request.POST['password2']
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            try:
+                # Send verification email and create user
+                inactive_user = send_verification_email(request, form)
+                messages.success(request, 'Please verify your email address to complete registration.')
+                return redirect('signin')
+            except Exception as e:
+                messages.error(request, f'Error sending email: {e}')
+                return redirect('register')
+    else:
+        form = RegistrationForm()
 
-
-
-        user = User.objects.create_user(username, email, password)
-
-        user.save()
-
-        messages.success(request, f'Account created for {first_name} {last_name}!')
-        return redirect('signin')
-
-    return render(request,'UserAuth/register.html')
+    return render(request, 'UserAuth/register.html', {'form': form})
 
 
 def signin(request):

@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from UserAuth import views
 urlpatterns = [
-    path("restaurants/", include("restaurants.urls")),
+    path("restaurants/", include("restaurants.urls"), name='restaurants'),
     path('admin/', admin.site.urls),
     path('', include('UserAuth.urls'), name='home'),
+    path('verification/', include('verify_email.urls')),
 ]
