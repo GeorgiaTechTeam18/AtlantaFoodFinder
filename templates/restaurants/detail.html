@@ -4,5 +4,22 @@
     <link rel="stylesheet" href="{% static 'restaurants/style.css' %}">
 {% endblock %}
 {% block body %}
-    {{ restaurant }}
+    <h1>{{ name }}</h1>
+    <p><strong>Cuisine Type:</strong> {{ cuisineType }}</p>
+    <p><strong>Contact Information:</strong> {{ contactInformation }}</p>
+    <p><strong>Address:</strong> {{ address }}</p>
+    <p><strong>Rating:</strong> {{ rating }}</p>
+    <p><strong>Number of Ratings:</strong> {{ numRatings }}</p>
+    <h2>Opening Hours</h2>
+    <ul>
+        {% for hour in openingHours %}
+            <li>{{ hour }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Reviews</h2>
+    <ul>
+        {% for review in reviews %}
+            <li>{{ review }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
