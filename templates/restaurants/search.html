@@ -1,37 +1,113 @@
 {% extends 'UserAuth/base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'restaurants/style.css' %}">
+{% endblock %}
 {% block body %}
-    <form method="get">
+    <form class="searchForm" method="get">
         <label for="q">Restaurant Search</label>
         <br>
-        <input type="text" id="q" name="q">
-        <br>
-        <input type="submit" value="Submit">
+        <div class="searchInputContainer">
+            <input class="searchInput" type="text" id="q" name="q" value="{{ query }}">
+            <input type="submit" value="Submit">
+        </div>
+        <label for="radius">Search Radius</label>
+        <select name="radius" id="radius">
+            <option value="1">1 Mile</option>
+            <option selected="selected" value="5">5 Miles</option>
+            <option value="10">10 Miles</option>
+            <option value="20">20 Miles</option>
+        </select>
+        <input type="hidden" id="inputLat" name="lat"/>
+        <input type="hidden" id="inputLon" name="lon"/>
     </form>
+    <button id="geoLocationButton">Search with current location</button>
+    <span id="status"></span>
+    {% if query%}
+        <div>Showing results for {{ address }}</div>
+    {% endif %}
     <ol id="searchResultsList">
         {% include 'restaurants/searchResultsItems.html' %}
     </ol>
-    <button style="display: none" id="loadMore" onclick="loadMore()">More</button>
+    <button class="moreButton" style="display: none" id="loadMore" onclick="loadMore()">More</button>
     <div style="display: none" id="loadingIndicator">Loading...</div>
     <script>
         let pageToken = "{{ searchResults.nextPageToken }}";
+        const urlParams = new URLSearchParams(window.location.search);
         const loadMoreButton = document.getElementById("loadMore")
         const loadingIndicator = document.getElementById("loadingIndicator")
-        if(pageToken.length !== 0){
+        const inputLat = document.querySelector("#inputLat");
+        const inputLon = document.querySelector("#inputLon");
+        if (pageToken.length !== 0) {
             loadMoreButton.style.display = "block"
         }
+
         function loadMore() {
             loadMoreButton.style.display = "none"
             loadingIndicator.style.display = "block"
-            fetch("{% url "restaurantSearch" %}?q={{ query }}&pageToken=" + pageToken)
+            fetch("{% url "restaurantSearch" %}?" + urlParams.toString() + "&pageToken=" + pageToken)
                 .then(x => x.json())
                 .then(x => {
                     loadingIndicator.style.display = "none"
                     document.getElementById("searchResultsList").innerHTML += x.additionalHtml
                     pageToken = x.nextPageToken
-                    if(pageToken.length !== 0){
+                    if (pageToken.length !== 0) {
                         loadMoreButton.style.display = "block"
                     }
                 })
+        }
+
+        const switchModeButton = document.querySelector("#geoLocationButton")
+        let isUsingGPS = false;
+
+        // Code modified from https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API/Using_the_Geolocation_API
+        function getGeoLocation() {
+
+            if (isUsingGPS) {
+                inputLat.value = "";
+                inputLon.value = "";
+                isUsingGPS = false;
+                switchModeButton.innerText = "Search with current location"
+                return;
+            }
+            const status = document.querySelector("#status");
+
+            function success(position) {
+                isUsingGPS = true;
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                status.textContent = "";
+                inputLat.value = latitude;
+                inputLon.value = longitude;
+
+                switchModeButton.innerText = "Search based on the center of Atlanta";
+            }
+
+            function error() {
+                status.textContent = "Unable to retrieve your location";
+            }
+
+            if (!navigator.geolocation) {
+                status.textContent = "Geolocation is not supported by your browser";
+            } else {
+                status.textContent = "Locating…";
+                navigator.geolocation.getCurrentPosition(success, error);
+            }
+        }
+
+        switchModeButton.addEventListener("click", getGeoLocation);
+
+        // Set the Form fields based on the previous query
+        if (urlParams.has("lat") && urlParams.has("lon") && urlParams.get("lat").length > 0 && urlParams.get("lon").length > 0) {
+            switchModeButton.innerText = "Search based on the center of Atlanta";
+            isUsingGPS = true;
+            inputLat.value = urlParams.get("lat");
+            inputLon.value = urlParams.get("lon");
+        }
+
+        if (urlParams.has("radius") && urlParams.get("radius").length > 0) {
+            document.getElementById("radius").value = urlParams.get("radius")
         }
     </script>
 {% endblock %}
