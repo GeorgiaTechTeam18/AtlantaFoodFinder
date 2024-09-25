@@ -57,13 +57,17 @@
         let map;
 
         async function initMap() {
+            if ({% if searchResults.places|length > 0 %}false{% else %}true{% endif %}) {
+                return;
+            }
+            
+            console.log({{ searchResults.places|length  }})
             document.getElementById("loadMore").addEventListener("click", loadMore);
             const center = { lat: 33.77457, lng: -84.38907};
             // Request needed libraries.
             const { Map, InfoWindow } = await google.maps.importLibrary("maps");
             const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-
-            // The map, centered at Uluru
+            
             map = new Map(document.getElementById("map"), {
                 zoom: 12,
                 center: center,
