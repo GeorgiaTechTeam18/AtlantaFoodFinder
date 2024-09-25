@@ -74,7 +74,8 @@ def resturantSearch(request):
         additionalHtml = render_to_string('restaurants/searchResultsItems.html', context)
         return JsonResponse({
             "additionalHtml": additionalHtml,
-            "nextPageToken": searchResults.get("nextPageToken", "")
+            "nextPageToken": searchResults.get("nextPageToken", ""),
+            "restaurants": searchResults.get("places", []),
         })
     context = {
         "query": searchQuery,

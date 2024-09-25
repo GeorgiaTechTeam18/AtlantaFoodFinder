@@ -29,7 +29,7 @@
     <ol id="searchResultsList">
         {% include 'restaurants/searchResultsItems.html' %}
     </ol>
-    <button class="moreButton" style="display: none" id="loadMore" onclick="loadMore()">More</button>
+    <button class="moreButton" style="display: none" id="loadMore">More</button>
     <div style="display: none" id="loadingIndicator">Loading...</div>
     <div id="map"></div>
     <script>
@@ -53,24 +53,44 @@
         let map;
 
         async function initMap() {
-            const position = { lat: 33.77457, lng: -84.38907};
+            document.getElementById("loadMore").addEventListener("click", loadMore);
+            const center = { lat: 33.77457, lng: -84.38907};
             // Request needed libraries.
-            const { Map } = await google.maps.importLibrary("maps");
+            const { Map, InfoWindow } = await google.maps.importLibrary("maps");
             const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
             // The map, centered at Uluru
             map = new Map(document.getElementById("map"), {
                 zoom: 12,
-                center: position,
+                center: center,
                 mapId: "RESULTS_MAP_ID",
             });
 
-            {% for restaurant in searchResults.places %}
-                new AdvancedMarkerElement({
+            function createMarker(restaurant) {
+                const restaurantMarker = new AdvancedMarkerElement({
                     map: map,
-                    position: { lat: {{ restaurant.location.latitude }}, lng: {{ restaurant.location.longitude }}},
-                    title: "{{ restaurant.displayName.text }}",
+                    position: { lat: restaurant.location.latitude, lng: restaurant.location.longitude },
+                    title: restaurant.displayName.text,
                 });
+                // Add a click listener for each marker, and set up the info window.
+                restaurantMarker.addListener("click", ({ domEvent, latLng }) => {
+                    const { target } = domEvent;
+
+                    infoWindow.close();
+                    infoWindow.setHeaderContent(restaurant.displayName.text);
+                    infoWindow.setContent(
+                    `${restaurant.formattedAddress}
+                    <br>
+                    <a href="details/${restaurant.id}" tabindex="0"> <span> View Details Page </span> </a>
+                    `);
+                    infoWindow.open(restaurantMarker.map, restaurantMarker);
+                })
+            }
+            
+            // Create an info window to share between markers.
+            const infoWindow = new InfoWindow();
+            {% for restaurant in searchResults.places %}
+                createMarker({{ restaurant|safe  }});
             {% endfor %}
 
             if (urlParams.get("lat").length > 0 && urlParams.get("lon").length > 0) {
@@ -79,24 +99,28 @@
                     lng: parseFloat(urlParams.get("lon"))
                 })
             }
+            
+            
+            function loadMore() {
+                loadMoreButton.style.display = "none"
+                loadingIndicator.style.display = "block"
+                fetch("{% url "restaurantSearch" %}?" + urlParams.toString() + "&pageToken=" + pageToken)
+                    .then(x => x.json())
+                    .then(x => {
+                        loadingIndicator.style.display = "none"
+                        document.getElementById("searchResultsList").innerHTML += x.additionalHtml
+                        pageToken = x.nextPageToken
+                        if (pageToken.length !== 0) {
+                            loadMoreButton.style.display = "block"
+                        }
+                        for (const restaurant of x.restaurants) {
+                            createMarker(restaurant);
+                        }
+                    })
+            }
         }
 
         initMap();
-
-        function loadMore() {
-            loadMoreButton.style.display = "none"
-            loadingIndicator.style.display = "block"
-            fetch("{% url "restaurantSearch" %}?" + urlParams.toString() + "&pageToken=" + pageToken)
-                .then(x => x.json())
-                .then(x => {
-                    loadingIndicator.style.display = "none"
-                    document.getElementById("searchResultsList").innerHTML += x.additionalHtml
-                    pageToken = x.nextPageToken
-                    if (pageToken.length !== 0) {
-                        loadMoreButton.style.display = "block"
-                    }
-                })
-        }
 
         const switchModeButton = document.querySelector("#geoLocationButton")
         let isUsingGPS = false;
