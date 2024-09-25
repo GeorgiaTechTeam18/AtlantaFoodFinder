@@ -39,7 +39,7 @@ def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5)
     }, headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-        'X-Goog-FieldMask': 'nextPageToken,places.id,places.displayName,places.formattedAddress,places.priceLevel',
+        'X-Goog-FieldMask': 'nextPageToken,places.id,places.displayName,places.location,places.formattedAddress,places.priceLevel',
     })
     return searchResults.json()
 
@@ -80,6 +80,7 @@ def resturantSearch(request):
         "query": searchQuery,
         "address": address,
         "searchResults": searchResults,
+        "GOOGLE_MAPS_API_KEY": os.getenv('FRONTEND_GOOGLE_MAPS_KEY'),
     }
     return render(request, 'restaurants/search.html', context)
 
