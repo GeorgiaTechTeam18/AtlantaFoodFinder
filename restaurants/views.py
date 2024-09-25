@@ -110,5 +110,6 @@ def restaurant_detail_view(request, place_id):
         'reviews': details["reviews"],
         'lat': details["location"]["latitude"],
         'lon': details["location"]["longitude"],
+        "GOOGLE_MAPS_API_KEY": os.getenv('FRONTEND_GOOGLE_MAPS_KEY'),
     }
     return render(request, 'restaurants/detail.html', context)

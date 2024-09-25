@@ -65,19 +65,15 @@
             const restaurantMarker = new AdvancedMarkerElement({
                 map: map,
                 position: { lat: {{lat}}, lng: {{lon}} },
-                title: {{ name }},
+                title: "{{ name }}",
             });
             // Add a click listener for each marker, and set up the info window.
             restaurantMarker.addListener("click", ({ domEvent, latLng }) => {
                 const { target } = domEvent;
 
                 infoWindow.close();
-                infoWindow.setHeaderContent(restaurant.displayName.text);
-                infoWindow.setContent(
-                `${restaurant.formattedAddress}
-                <br>
-                <a href="details/${restaurant.id}" tabindex="0"> <span> View Details Page </span> </a>
-                `);
+                infoWindow.setHeaderContent("{{ name }}");
+                infoWindow.setContent(`{{address}}`);
                 infoWindow.open(restaurantMarker.map, restaurantMarker);
             })
 
