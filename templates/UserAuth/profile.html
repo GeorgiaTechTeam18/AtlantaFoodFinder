@@ -1,0 +1,21 @@
+{% extends 'UserAuth/base.html' %}
+{% block body %}
+    <h2>Hi {{ user.first_name }}!</h2>
+    
+    <h2>Your Reviews</h2>
+
+    {% if reviews %}
+        <div class="reviews-container">
+            {% for review in reviews %}
+                <div class="review">
+                    <h3>{{ review.title }}</h3>
+                    <p><strong>Rating:</strong> {{ review.star_rating }} stars</p>
+                    <p>{{ review.review_text }}</p>
+                    <p><strong>Restaurant ID:</strong> {{ review.restaurant_id }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't reviewed anything yet! Start by going to <a href="{% url 'restaurantSearch' %}">restaurant search</a> and looking up your favorite restaurants in Atlanta!</p>
+    {% endif %}
+{% endblock %}

@@ -4,34 +4,38 @@
     <form action='{% url 'register' %}' method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
+
         <div>
-            <label for="id_firstname">First Name</label>
-            <input type="text" id="id_firstname" name="firstname" required>
+            <label for="id_first_name">First Name</label>
+            {{ form.first_name.errors }}
+            {{ form.first_name }}
         </div>
         <div>
-            <label for="id_lastname">Last Name</label>
-            <input type="text" id="id_lastname" name="lastname" required>
+            <label for="id_last_name">Last Name</label>
+            {{ form.last_name.errors }}
+            {{ form.last_name }}
         </div>
         <div>
             <label for="id_username">Username</label>
-            {{ form.username.errors }}  <!-- Display username errors -->
-            {{ form.username }}  <!-- Render the username field -->
+            {{ form.username.errors }}
+            {{ form.username }}
         </div>
         <div>
             <label for="id_email">Email</label>
-            {{ form.email.errors }}  <!-- Display email errors -->
-            {{ form.email }}  <!-- Render the email field -->
+            {{ form.email.errors }}
+            {{ form.email }}
         </div>
         <div>
             <label for="id_password1">Password</label>
-            {{ form.password1.errors }}  <!-- Display password errors -->
-            {{ form.password1 }}  <!-- Render the password field -->
+            {{ form.password1.errors }}
+            {{ form.password1 }}
         </div>
         <div>
             <label for="id_password2">Confirm Password</label>
-            {{ form.password2.errors }}  <!-- Display confirm password errors -->
-            {{ form.password2 }}  <!-- Render the confirm password field -->
+            {{ form.password2.errors }}
+            {{ form.password2 }}
         </div>
+
         <button type="submit">Register</button>
     </form>
 {% endblock %}
