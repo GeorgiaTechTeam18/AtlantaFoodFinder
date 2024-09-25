@@ -27,6 +27,26 @@
     margin-top: 1em;
 }
 
+.twoColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
 #map {
-    height: 100vh;
+    height: 100dvh;
+}
+
+.gm-style-iw-ch {
+    font-weight: bold;
+}
+
+@media only screen and (min-width: 600px) {
+    .twoColumn {
+        flex-direction: row;
+    }
+    #map {
+        min-width: 40%;
+        flex-grow: 2;
+    }
 }
