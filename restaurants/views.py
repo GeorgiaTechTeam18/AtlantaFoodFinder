@@ -39,7 +39,7 @@ def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5)
     }, headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-        'X-Goog-FieldMask': 'nextPageToken,places.id,places.displayName,places.formattedAddress,places.priceLevel',
+        'X-Goog-FieldMask': 'nextPageToken,places.id,places.displayName,places.location,places.formattedAddress,places.priceLevel',
     })
     return searchResults.json()
 
@@ -74,12 +74,14 @@ def resturantSearch(request):
         additionalHtml = render_to_string('restaurants/searchResultsItems.html', context)
         return JsonResponse({
             "additionalHtml": additionalHtml,
-            "nextPageToken": searchResults.get("nextPageToken", "")
+            "nextPageToken": searchResults.get("nextPageToken", ""),
+            "restaurants": searchResults.get("places", []),
         })
     context = {
         "query": searchQuery,
         "address": address,
         "searchResults": searchResults,
+        "GOOGLE_MAPS_API_KEY": os.getenv('FRONTEND_GOOGLE_MAPS_KEY'),
     }
     return render(request, 'restaurants/search.html', context)
 
@@ -90,7 +92,7 @@ def get_restaurant_details(place_id):
     headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-        'X-Goog-FieldMask': 'types,nationalPhoneNumber,formattedAddress,rating,regularOpeningHours,'
+        'X-Goog-FieldMask': 'photos,location,types,nationalPhoneNumber,formattedAddress,rating,regularOpeningHours,'
                             'userRatingCount,displayName,reviews,',
     })
     return detailsResult.json()
@@ -106,5 +108,9 @@ def restaurant_detail_view(request, place_id):
         'numRatings': details["userRatingCount"],
         'name': details["displayName"]['text'],
         'reviews': details["reviews"],
+        'lat': details["location"]["latitude"],
+        'lon': details["location"]["longitude"],
+        "GOOGLE_MAPS_API_KEY": os.getenv('FRONTEND_GOOGLE_MAPS_KEY'),
+        'photos': details["photos"]
     }
     return render(request, 'restaurants/detail.html', context)
