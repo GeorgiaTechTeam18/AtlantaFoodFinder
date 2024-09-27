@@ -34,7 +34,7 @@
 }
 
 #map {
-    height: 100dvh;
+    height: 50dvh;
 }
 
 .gm-style-iw-ch {
@@ -45,7 +45,7 @@
     .twoColumn {
         flex-direction: row;
     }
-    #map {
+    .rightColumn {
         min-width: 40%;
         flex-grow: 2;
     }

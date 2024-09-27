@@ -12,6 +12,7 @@
             <p><strong>Address:</strong> {{ address }}</p>
             <p><strong>Rating:</strong> {{ rating }}</p>
             <p><strong>Number of Ratings:</strong> {{ numRatings }}</p>
+            
             <h2>Opening Hours</h2>
             <ul>
                 {% for hour in openingHours %}
@@ -32,7 +33,10 @@
                 {% endfor %}
             </ul>
         </div>
-        <div id="map"></div>
+        <div class="rightColumn">
+            <div id="map"></div>
+            {% include 'restaurants/photoSlideshow.html' %}
+        </div>
     </div>
     
  <script>

@@ -92,7 +92,7 @@ def get_restaurant_details(place_id):
     headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-        'X-Goog-FieldMask': 'location,types,nationalPhoneNumber,formattedAddress,rating,regularOpeningHours,'
+        'X-Goog-FieldMask': 'photos,location,types,nationalPhoneNumber,formattedAddress,rating,regularOpeningHours,'
                             'userRatingCount,displayName,reviews,',
     })
     return detailsResult.json()
@@ -111,5 +111,6 @@ def restaurant_detail_view(request, place_id):
         'lat': details["location"]["latitude"],
         'lon': details["location"]["longitude"],
         "GOOGLE_MAPS_API_KEY": os.getenv('FRONTEND_GOOGLE_MAPS_KEY'),
+        'photos': details["photos"]
     }
     return render(request, 'restaurants/detail.html', context)
