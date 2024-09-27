@@ -12,10 +12,8 @@ class Review(models.Model):
     star_rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     review_text = models.TextField()
 
-class UserRestuarant(models.Model):
+class UserRestaurant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    restaurant = models.ForeignKey(Review, on_delete=models.CASCADE)
-
-
-
-
+    restaurant_id = models.TextField()
+    class Meta:
+        unique_together = ('user', 'restaurant_id')

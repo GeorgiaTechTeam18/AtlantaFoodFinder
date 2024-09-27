@@ -1,6 +1,20 @@
 {% extends 'UserAuth/base.html' %}
 {% block body %}
     <h2>Hi {{ user.first_name }}!</h2>
+
+    <h2>Your Favorites</h2>
+
+    {% if favorites %}
+        <div class="reviews-container">
+            {% for favorite in favorites %}
+                <div class="favorite">
+                    <p><strong>Restaurant ID:</strong> {{ favorite.restaurant_id }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't favorited anything yet! Start by going to <a href="{% url 'restaurantSearch' %}">restaurant search</a> and looking up your favorite restaurants in Atlanta!</p>
+    {% endif %}
     
     <h2>Your Reviews</h2>
 
