@@ -4,6 +4,7 @@ import requests
 import os
 from dotenv import load_dotenv
 from django.template.loader import render_to_string
+from functools import cache
 
 load_dotenv()
 milesPerMeters = 1609.34
@@ -20,7 +21,7 @@ def getReverseGeocodedAddress(latLon):
     except:
         return "issues getting address"
 
-
+@cache
 def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5):
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
         "pageToken": pagetoken,
