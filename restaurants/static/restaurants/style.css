@@ -50,3 +50,15 @@
         flex-grow: 2;
     }
 }
+
+
+/* Style for just the Details Page */
+.reviewHeader {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+.reviewerPhoto {
+    max-width: 2em;
+}

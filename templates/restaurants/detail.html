@@ -21,7 +21,14 @@
             <h2>Reviews</h2>
             <ul>
                 {% for review in reviews %}
-                    <li>{{ review }}</li>
+                    <li>
+                        <div class="reviewHeader">
+                            <div>
+                            {{ review.rating }} Stars by {{ review.authorAttribution.displayName }} </div>
+                            <img class="reviewerPhoto" src="{{ review.authorAttribution.photoUri }}">
+                        </div>
+                        <p>{{ review.text.text }}</p>
+                    </li>
                 {% endfor %}
             </ul>
         </div>
@@ -49,11 +56,11 @@
         let map;
 
         async function initMap() {
-            const center = { lat: {{ lat }}, lng: {{ lon }} };
+            const center = {lat: {{ lat }}, lng: {{ lon }}};
             // Request needed libraries.
-            const { Map, InfoWindow } = await google.maps.importLibrary("maps");
-            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-            
+            const {Map, InfoWindow} = await google.maps.importLibrary("maps");
+            const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
+
             map = new Map(document.getElementById("map"), {
                 zoom: 12,
                 center: center,
@@ -64,12 +71,12 @@
             const infoWindow = new InfoWindow();
             const restaurantMarker = new AdvancedMarkerElement({
                 map: map,
-                position: { lat: {{lat}}, lng: {{lon}} },
+                position: {lat: {{lat}}, lng: {{lon}}},
                 title: "{{ name }}",
             });
             // Add a click listener for each marker, and set up the info window.
-            restaurantMarker.addListener("click", ({ domEvent, latLng }) => {
-                const { target } = domEvent;
+            restaurantMarker.addListener("click", ({domEvent, latLng}) => {
+                const {target} = domEvent;
 
                 infoWindow.close();
                 infoWindow.setHeaderContent("{{ name }}");
