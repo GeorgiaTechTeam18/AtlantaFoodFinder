@@ -45,7 +45,7 @@
     .twoColumn {
         flex-direction: row;
     }
-    .rightColumn {
+    .rightColumn, #map {
         min-width: 40%;
         flex-grow: 2;
     }
