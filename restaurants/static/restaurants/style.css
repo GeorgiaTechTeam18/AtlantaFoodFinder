@@ -26,3 +26,39 @@
     padding: 1em;
     margin-top: 1em;
 }
+
+.twoColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#map {
+    height: 50dvh;
+}
+
+.gm-style-iw-ch {
+    font-weight: bold;
+}
+
+@media only screen and (min-width: 600px) {
+    .twoColumn {
+        flex-direction: row;
+    }
+    .rightColumn, #map {
+        min-width: 40%;
+        flex-grow: 2;
+    }
+}
+
+
+/* Style for just the Details Page */
+.reviewHeader {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+.reviewerPhoto {
+    max-width: 2em;
+}
