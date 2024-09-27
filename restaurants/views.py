@@ -107,4 +107,5 @@ def restaurant_detail_view(request, place_id):
         'name': details["displayName"]['text'],
         'reviews': details["reviews"],
     }
+
     return render(request, 'restaurants/detail.html', context)
