@@ -83,7 +83,7 @@
                 const {target} = domEvent;
 
                 infoWindow.close();
-                infoWindow.setHeaderContent("{{ name }}");
+                infoWindow.setHeaderContent("{{ name|safe }}");
                 infoWindow.setContent(`{{address}}`);
                 infoWindow.open(restaurantMarker.map, restaurantMarker);
             })
