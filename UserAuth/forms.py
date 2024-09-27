@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 
+from UserAuth.models import Review
+
 User = get_user_model()
 
 class RegistrationForm(UserCreationForm):
@@ -28,3 +30,17 @@ class RegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class ReviewForm(forms.ModelForm):
+    title = forms.CharField(max_length=100,
+                            required=True,
+                            widget=forms.TextInput()
+                            )
+
+    text = forms.CharField(widget=forms.Textarea)
+    rating = forms.ChoiceField(choices=[(i, str(i)) for i in range(1,6)],
+                               widget=forms.RadioSelect
+                               )
+    class Meta:
+        model = Review
+        fields = ['title', 'text', 'rating']

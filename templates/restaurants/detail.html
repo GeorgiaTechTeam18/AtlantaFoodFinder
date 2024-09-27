@@ -20,7 +20,42 @@
                 {% endfor %}
             </ul>
             <h2>Reviews</h2>
+            <div id="reviewform">
+                <h3>Add your own review of {{ name }}</h3>
+                <form action='{% url 'details' place_id %}' method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+    
+                    <div>
+                        <label for="id_title">Title:</label>
+                        {{ form.title.errors }}
+                        {{ form.title }}
+                    </div>
+                    <div>
+                        <label for="id_rating">Rating:</label>
+                        {{ form.rating.errors }}
+                        {% for choice in form.rating %}
+                            <label>{{ choice.tag }} {{ choice.choice_label }}</label>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        {{ form.text.errors }}
+                        {{ form.text }}
+                    </div>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+
             <ul>
+            {% for review in localReviews %}
+            <li>
+                <div>
+                    {{ review.title }}
+                    {{ review.star_rating }} Stars by {{ review.user.first_name }}
+                    <p>{{ review.review_text }}</p>
+                </div>
+            </li>
+            {% endfor %}
                 {% for review in reviews %}
                     <li>
                         <div class="reviewHeader">
