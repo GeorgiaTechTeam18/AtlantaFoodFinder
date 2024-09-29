@@ -7,7 +7,11 @@
     <h1>{{ name }}</h1>
     <div class="twoColumn">
         <div class="columnOne">
-            <button id="favButton">Add to Favorites</button>
+            {% if isUserAuthenticated %}
+                <button id="favButton">Add to Favorites</button>
+            {% else %}
+                <i>Sign in to be able to favorite restaurants</i>
+            {% endif %}
             <p><strong>Cuisine Type:</strong> {{ cuisineType }}</p>
             <p><strong>Contact Information:</strong> {{ contactInformation }}</p>
             <p><strong>Address:</strong> {{ address }}</p>
@@ -23,29 +27,33 @@
             <h2>Reviews</h2>
             <div id="reviewform">
                 <h3>Add your own review of {{ name }}</h3>
-                <form action='{% url 'details' place_id %}' method="post">
-                    {% csrf_token %}
-                    {{ form.non_field_errors }}
-    
-                    <div>
-                        <label for="id_title">Title:</label>
-                        {{ form.title.errors }}
-                        {{ form.title }}
-                    </div>
-                    <div>
-                        <label for="id_rating">Rating:</label>
-                        {{ form.rating.errors }}
-                        {% for choice in form.rating %}
-                            <label>{{ choice.tag }} {{ choice.choice_label }}</label>
-                        {% endfor %}
-                    </div>
-                    <div>
-                        {{ form.text.errors }}
-                        {{ form.text }}
-                    </div>
-                    <input type="hidden" id="action" name="action" value="create_a_review">
-                    <button type="submit">Submit</button>
-                </form>
+                {% if isUserAuthenticated %}
+                    <form action='{% url 'details' place_id %}' method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+        
+                        <div>
+                            <label for="id_title">Title:</label>
+                            {{ form.title.errors }}
+                            {{ form.title }}
+                        </div>
+                        <div>
+                            <label for="id_rating">Rating:</label>
+                            {{ form.rating.errors }}
+                            {% for choice in form.rating %}
+                                <label>{{ choice.tag }} {{ choice.choice_label }}</label>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.text.errors }}
+                            {{ form.text }}
+                        </div>
+                        <input type="hidden" id="action" name="action" value="create_a_review">
+                        <button type="submit">Submit</button>
+                    </form>
+                {% else %}
+                    <i>Sign in to add your own reviews</i>
+                {% endif %}
             </div>
 
             <ul>
