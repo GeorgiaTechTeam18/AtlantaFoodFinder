@@ -139,6 +139,7 @@ def restaurant_detail_view(request, place_id):
         form = ReviewForm()
 
     reviews = Review.objects.filter(restaurant_id=place_id).select_related('user')
+    previouslyFavorite = False if not request.user.is_authenticated else len(UserRestaurant.objects.filter(user=request.user).filter(restaurant=place_id)) == 1
     context = {
         'place_id': place_id,
         'form': form,
@@ -156,7 +157,8 @@ def restaurant_detail_view(request, place_id):
         'lon': details["location"]["longitude"],
         "GOOGLE_MAPS_API_KEY": os.getenv('FRONTEND_GOOGLE_MAPS_KEY'),
         'photos': details["photos"],
-        'isUserAuthenticated': request.user.is_authenticated
+        'isUserAuthenticated': request.user.is_authenticated,
+        'previouslyFavorite': previouslyFavorite
     }
 
     return render(request, 'restaurants/detail.html', context)

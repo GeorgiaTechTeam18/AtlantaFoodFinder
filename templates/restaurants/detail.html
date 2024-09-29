@@ -8,7 +8,13 @@
     <div class="twoColumn">
         <div class="columnOne">
             {% if isUserAuthenticated %}
-                <button id="favButton">Add to Favorites</button>
+                <button id="favButton">
+                {% if previouslyFavorite %}
+                    Remove from Favorites
+                {% else %}
+                    Add to Favorites
+                {% endif %}
+                </button>
             {% else %}
                 <i>Sign in to be able to favorite restaurants</i>
             {% endif %}
