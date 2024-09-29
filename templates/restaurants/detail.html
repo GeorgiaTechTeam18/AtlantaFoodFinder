@@ -7,6 +7,7 @@
     <h1>{{ name }}</h1>
     <div class="twoColumn">
         <div class="columnOne">
+            <button id="favButton">Add to Favorites</button>
             <p><strong>Cuisine Type:</strong> {{ cuisineType }}</p>
             <p><strong>Contact Information:</strong> {{ contactInformation }}</p>
             <p><strong>Address:</strong> {{ address }}</p>
@@ -20,14 +21,49 @@
                 {% endfor %}
             </ul>
             <h2>Reviews</h2>
+            <div id="reviewform">
+                <h3>Add your own review of {{ name }}</h3>
+                <form action='{% url 'details' place_id %}' method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+    
+                    <div>
+                        <label for="id_title">Title:</label>
+                        {{ form.title.errors }}
+                        {{ form.title }}
+                    </div>
+                    <div>
+                        <label for="id_rating">Rating:</label>
+                        {{ form.rating.errors }}
+                        {% for choice in form.rating %}
+                            <label>{{ choice.tag }} {{ choice.choice_label }}</label>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        {{ form.text.errors }}
+                        {{ form.text }}
+                    </div>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+
             <ul>
+                {% for review in localReviews %}
+                    <li>
+                        <div class="reviewHeader">
+                            {{ review.user.first_name }} {{ review.user.last_name }}<br>
+                            {{ review.star_rating }} Stars - {{ review.title }}
+                        </div>
+                        <p>{{ review.review_text }}</p>
+                    </li>
+                {% endfor %}
                 {% for review in reviews %}
                     <li>
                         <div class="reviewHeader">
-                            <div>
-                            {{ review.rating }} Stars by {{ review.authorAttribution.displayName }} </div>
                             <img class="reviewerPhoto" src="{{ review.authorAttribution.photoUri }}">
+                            {{ review.authorAttribution.displayName }}<br>
                         </div>
+                        {{ review.rating }} Stars<br>
                         <p>{{ review.text.text }}</p>
                     </li>
                 {% endfor %}
@@ -91,5 +127,27 @@
         }
 
         initMap();
+
+        document.getElementById("favButton").addEventListener("click", function() {
+            const isFavorited = this.textContent.trim() === "Remove from Favorites";
+            fetch("{% url 'details' place_id %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: new URLSearchParams({
+                    'action': isFavorited ? 'remove_from_favorites' : 'add_to_favorites',
+                    'restaurant_id': "{{ place_id }}",
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.textContent = isFavorited ? "Add to Favorites" : "Remove from Favorites";
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
     </script>
 {% endblock %}

@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 import requests
 import os
 from dotenv import load_dotenv
 from django.template.loader import render_to_string
+from UserAuth.forms import ReviewForm
+from UserAuth.models import Review, User, UserRestaurant, Restaurant
 
 load_dotenv()
 milesPerMeters = 1609.34
@@ -99,7 +101,49 @@ def get_restaurant_details(place_id):
 
 def restaurant_detail_view(request, place_id):
     details = get_restaurant_details(place_id)
+    if request.method == "POST":
+        if request.method == "POST" and request.user.is_authenticated:
+            action = request.POST.get('action')
+            if action == 'add_to_favorites':
+                Restaurant.objects.get_or_create(
+                    id=place_id,
+                    name=details["displayName"]['text'],
+                )
+                UserRestaurant.objects.get_or_create(
+                    user=request.user,
+                    restaurant= Restaurant.objects.get(id=place_id),
+                )
+
+                return JsonResponse({'success': True})
+
+            elif action == 'remove_from_favorites':
+                UserRestaurant.objects.filter(
+                    user=request.user,
+                    restaurant_id=place_id
+                ).delete()
+                return JsonResponse({'success': True})
+
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            Restaurant.objects.get_or_create(
+                id=place_id,
+                name=details["displayName"]['text'],
+            )
+            review = form.save(commit=False)
+            review.user = request.user
+            review.restaurant_id = place_id
+            review.title = form.cleaned_data['title']
+            review.star_rating = form.cleaned_data['rating']
+            review.review_text = form.cleaned_data['text']
+            review.save()
+            return redirect('details', place_id=place_id)  # Redirect to prevent re-submission
+    else:
+        form = ReviewForm()
+
+    reviews = Review.objects.filter(restaurant_id=place_id).select_related('user')
     context = {
+        'place_id': place_id,
+        'form': form,
         'cuisineType': details["types"][0],
         'contactInformation': details["nationalPhoneNumber"],
         'address': details["formattedAddress"],
@@ -107,10 +151,13 @@ def restaurant_detail_view(request, place_id):
         'openingHours': details["regularOpeningHours"]['weekdayDescriptions'],
         'numRatings': details["userRatingCount"],
         'name': details["displayName"]['text'],
+        'localReviews' : reviews,
+
         'reviews': details["reviews"],
         'lat': details["location"]["latitude"],
         'lon': details["location"]["longitude"],
         "GOOGLE_MAPS_API_KEY": os.getenv('FRONTEND_GOOGLE_MAPS_KEY'),
         'photos': details["photos"]
     }
+
     return render(request, 'restaurants/detail.html', context)
