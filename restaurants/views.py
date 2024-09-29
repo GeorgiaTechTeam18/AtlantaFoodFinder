@@ -21,6 +21,7 @@ def getReverseGeocodedAddress(latLon):
     except:
         return "issues getting address"
 
+@cache_maintainer(86400)
 @cache
 def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5):
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
