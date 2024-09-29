@@ -10,7 +10,6 @@ from UserAuth.models import Review, User, UserRestaurant, Restaurant
 load_dotenv()
 milesPerMeters = 1609.34
 
-
 def getReverseGeocodedAddress(latLon):
     try:
         reverseGeocodeResult = requests.get('https://revgeocode.search.hereapi.com/v1/'
@@ -101,30 +100,29 @@ def get_restaurant_details(place_id):
 
 def restaurant_detail_view(request, place_id):
     details = get_restaurant_details(place_id)
-    if request.method == "POST":
-        if request.method == "POST" and request.user.is_authenticated:
-            action = request.POST.get('action')
-            if action == 'add_to_favorites':
-                Restaurant.objects.get_or_create(
-                    id=place_id,
-                    name=details["displayName"]['text'],
-                )
-                UserRestaurant.objects.get_or_create(
-                    user=request.user,
-                    restaurant= Restaurant.objects.get(id=place_id),
-                )
+    if request.method == "POST" and request.user.is_authenticated:
+        action = request.POST.get('action')
+        if action == 'add_to_favorites':
+            Restaurant.objects.get_or_create(
+                id=place_id,
+                name=details["displayName"]['text'],
+            )
+            UserRestaurant.objects.get_or_create(
+                user=request.user,
+                restaurant= Restaurant.objects.get(id=place_id),
+            )
 
-                return JsonResponse({'success': True})
+            return JsonResponse({'success': True})
 
-            elif action == 'remove_from_favorites':
-                UserRestaurant.objects.filter(
-                    user=request.user,
-                    restaurant_id=place_id
-                ).delete()
-                return JsonResponse({'success': True})
+        elif action == 'remove_from_favorites':
+            UserRestaurant.objects.filter(
+                user=request.user,
+                restaurant_id=place_id
+            ).delete()
+            return JsonResponse({'success': True})
 
         form = ReviewForm(request.POST)
-        if form.is_valid():
+        if action == 'create_a_review' and form.is_valid():
             Restaurant.objects.get_or_create(
                 id=place_id,
                 name=details["displayName"]['text'],
