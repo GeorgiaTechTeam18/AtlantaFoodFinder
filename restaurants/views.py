@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 from django.template.loader import render_to_string
 from UserAuth.forms import ReviewForm
-from UserAuth.models import Review, User, UserRestaurant
+from UserAuth.models import Review, User, UserRestaurant, Restaurant
 
 load_dotenv()
 milesPerMeters = 1609.34
@@ -105,10 +105,15 @@ def restaurant_detail_view(request, place_id):
         if request.method == "POST" and request.user.is_authenticated:
             action = request.POST.get('action')
             if action == 'add_to_favorites':
+                Restaurant.objects.get_or_create(
+                    id=place_id,
+                    name=details["displayName"]['text'],
+                )
                 UserRestaurant.objects.get_or_create(
                     user=request.user,
-                    restaurant_id=place_id
+                    restaurant= Restaurant.objects.get(id=place_id),
                 )
+
                 return JsonResponse({'success': True})
 
             elif action == 'remove_from_favorites':
