@@ -8,6 +8,8 @@ from verify_email.email_handler import send_verification_email
 
 from django.contrib import messages
 
+from .models import Review, UserRestaurant
+
 User = get_user_model()
 def home(request):
     return render(request,'UserAuth/index.html')
@@ -56,4 +58,9 @@ def signout(request):
     logout(request)
     messages.success(request, 'You have been logged out.')
     return render(request,'UserAuth/logout.html')
+
+def profile(request):
+    favorites = UserRestaurant.objects.filter(user=request.user)
+    reviews = Review.objects.filter(user=request.user)
+    return render(request, 'UserAuth/profile.html', {'favorites': favorites, 'reviews': reviews})
 

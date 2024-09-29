@@ -1,0 +1,44 @@
+{% extends 'UserAuth/base.html' %}
+{% block body %}
+    <h2>Hi {{ user.first_name }}!</h2>
+
+    <h2>Your Favorites</h2>
+
+    {% if favorites %}
+        <div class="reviews-container">
+            {% for favorite in favorites %}
+                <div class="favorite">
+                    <p><strong>Restaurant: </strong> 
+                        <a href="{% url 'restaurant_detail_view' favorite.restaurant.id %}">
+                            {{ favorite.restaurant.name }}
+                        </a>
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't favorited anything yet! Start by going to <a href="{% url 'restaurantSearch' %}">restaurant search</a> and looking up your favorite restaurants in Atlanta!</p>
+    {% endif %}
+    
+    <h2>Your Reviews</h2>
+
+    {% if reviews %}
+        <div class="reviews-container">
+            {% for review in reviews %}
+                <div class="review">
+                    <h3>Restaurant: 
+                        <a href="{% url 'restaurant_detail_view' review.restaurant.id %}">
+                            {{ review.restaurant.name }}
+                        </a>
+                    </h3>
+                    <h2>{{ review.title }}</h2>
+                    <p><strong>Rating:</strong> {{ review.star_rating }} stars</p>
+                    <p>{{ review.review_text }}</p>
+                    
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't reviewed anything yet! Start by going to <a href="{% url 'restaurantSearch' %}">restaurant search</a> and looking up your favorite restaurants in Atlanta!</p>
+    {% endif %}
+{% endblock %}

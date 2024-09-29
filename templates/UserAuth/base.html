@@ -21,6 +21,9 @@
         </li>
         {% else %}
         <li class="start-right-aligned">
+            <a href="{% url 'profile' %}"> My profile</a>
+        </li>
+        <li>
             <a href="{% url 'signout' %}">Log out</a>
         </li>
         {% endif %}
