@@ -125,6 +125,10 @@ def restaurant_detail_view(request, place_id):
 
         form = ReviewForm(request.POST)
         if form.is_valid():
+            Restaurant.objects.get_or_create(
+                id=place_id,
+                name=details["displayName"]['text'],
+            )
             review = form.save(commit=False)
             review.user = request.user
             review.restaurant_id = place_id
