@@ -19,13 +19,13 @@
             <option value="20">20 Miles</option>
         </select>
         {% include 'restaurants/cuisineType.html' %}
-        <label for="rating">Rating</label>
-        <select name="rating" id="rating">
-            <option selected="selected" value="1">1 Star</option>
-            <option value="2">2 Stars</option>
-            <option value="3">3 Stars</option>
-            <option value="4">4 Stars</option>
-            <option value="5">5 Stars</option>
+        <label for="minRating">Min Rating</label>
+        <select name="minRating" id="minRating">
+            <option selected="selected" value="1">0 Star</option>
+            <option value="2">1 Stars</option>
+            <option value="3">2 Stars</option>
+            <option value="4">3 Stars</option>
+            <option value="5">4 Stars</option>
         </select>
         <input type="hidden" id="inputLat" name="lat"/>
         <input type="hidden" id="inputLon" name="lon"/>
@@ -196,8 +196,8 @@
             document.getElementById("includedType").value = urlParams.get("includedType")
         }
         
-        if (urlParams.has("rating") && urlParams.get("rating").length > 0) {
-            document.getElementById("rating").value = urlParams.get("rating")
+        if (urlParams.has("minRating") && urlParams.get("minRating").length > 0) {
+            document.getElementById("minRating").value = urlParams.get("minRating")
         }
     </script>
 {% endblock %}

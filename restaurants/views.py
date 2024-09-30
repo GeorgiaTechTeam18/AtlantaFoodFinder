@@ -26,7 +26,7 @@ def getReverseGeocodedAddress(latLon):
         return "issues getting address"
 
 @cache
-def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5, includedType="restaurant"):
+def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5, includedType="restaurant", minRating=1):
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
         "pageToken": pagetoken,
         "textQuery": query,
@@ -44,7 +44,7 @@ def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5,
     }, headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-        'X-Goog-FieldMask': 'nextPageToken,places.id,places.displayName,places.location,places.formattedAddress,places.priceLevel',
+        'X-Goog-FieldMask': 'nextPageToken,places.rating,places.id,places.displayName,places.location,places.formattedAddress,places.priceLevel',
     })
     return searchResults.json()
 
@@ -54,6 +54,7 @@ def resturantSearch(request):
     searchQuery = request.GET.get('q', None)
     latLon = (request.GET.get('lat', None), request.GET.get("lon", None))
     includedType = request.GET.get('includedType', "restaurant")
+    minRating = int(request.GET.get("minRating", "1"))
     address = "Atlanta"
     if (latLon[0] != None and len(latLon[0]) > 0):
         try:
@@ -71,7 +72,7 @@ def resturantSearch(request):
         radius = 5
     if (searchQuery == None):
         return render(request, 'restaurants/search.html')
-    searchResults = getPlacesSearch(searchQuery, pageToken, latLon, radius, includedType)
+    searchResults = getPlacesSearch(searchQuery, pageToken, latLon, radius, includedType, minRating)
     if (pageToken != None):
         context = {
             "query": searchQuery,
