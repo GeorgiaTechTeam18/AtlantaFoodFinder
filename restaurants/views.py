@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from xml.etree.ElementInclude import include
+
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 import requests
 import os
@@ -24,7 +26,7 @@ def getReverseGeocodedAddress(latLon):
         return "issues getting address"
 
 @cache
-def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5):
+def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5, includedType="restaurant"):
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
         "pageToken": pagetoken,
         "textQuery": query,
@@ -38,7 +40,7 @@ def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5)
                 "radius": radius * milesPerMeters,
             }
         },
-        "includedType": "restaurant",
+        "includedType": includedType,
     }, headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
@@ -51,6 +53,7 @@ def resturantSearch(request):
     pageToken = request.GET.get('pageToken', None)
     searchQuery = request.GET.get('q', None)
     latLon = (request.GET.get('lat', None), request.GET.get("lon", None))
+    includedType = request.GET.get('includedType', "restaurant")
     address = "Atlanta"
     if (latLon[0] != None and len(latLon[0]) > 0):
         try:
@@ -68,7 +71,7 @@ def resturantSearch(request):
         radius = 5
     if (searchQuery == None):
         return render(request, 'restaurants/search.html')
-    searchResults = getPlacesSearch(searchQuery, pageToken, latLon, radius)
+    searchResults = getPlacesSearch(searchQuery, pageToken, latLon, radius, includedType)
     if (pageToken != None):
         context = {
             "query": searchQuery,
@@ -104,6 +107,7 @@ def get_restaurant_details(place_id):
 def restaurant_detail_view(request, place_id):
     details = get_restaurant_details(place_id)
     if request.method == "POST" and request.user.is_authenticated:
+        form = ReviewForm(request.POST)
         action = request.POST.get('action')
         if action == 'add_to_favorites':
             Restaurant.objects.get_or_create(
@@ -124,8 +128,7 @@ def restaurant_detail_view(request, place_id):
             ).delete()
             return JsonResponse({'success': True})
 
-        form = ReviewForm(request.POST)
-        if action == 'create_a_review' and form.is_valid():
+        elif action == 'create_a_review' and form.is_valid():
             Restaurant.objects.get_or_create(
                 id=place_id,
                 name=details["displayName"]['text'],
