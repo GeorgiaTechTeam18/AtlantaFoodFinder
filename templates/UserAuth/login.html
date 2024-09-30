@@ -1,7 +1,8 @@
 {% extends 'UserAuth/base.html' %}
 
 {% block body %}
-    <form action='{% url 'signin' %}' method="post">
+    <form class="authForm" action='{% url 'signin' %}' method="post">
+        <h3>Sign In to your ATL Food Finder Account!</h3>
         {% csrf_token %}
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required><br>
@@ -9,6 +10,9 @@
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required><br>
 
-        <button type="submit" name="signin" id="signin">Sign in</button>
+        <span class="clearfix">
+            <button type="submit" name="signin" id="signin">Sign in</button>
+            <a href="{% url 'register' %}">Register a new account</a>
+        </span>
     </form>
 {% endblock %}

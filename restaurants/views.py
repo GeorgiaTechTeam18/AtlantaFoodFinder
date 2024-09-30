@@ -1,14 +1,18 @@
+from xml.etree.ElementInclude import include
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 import requests
 import os
 from dotenv import load_dotenv
 from django.template.loader import render_to_string
+from functools import cache
 from UserAuth.forms import ReviewForm
 from UserAuth.models import Review, User, UserRestaurant, Restaurant
 
 load_dotenv()
 milesPerMeters = 1609.34
+
 
 def getReverseGeocodedAddress(latLon):
     try:
@@ -21,8 +25,8 @@ def getReverseGeocodedAddress(latLon):
     except:
         return "issues getting address"
 
-
-def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5):
+@cache
+def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5, includedType="restaurant", minRating=1):
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
         "pageToken": pagetoken,
         "textQuery": query,
@@ -36,11 +40,12 @@ def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5)
                 "radius": radius * milesPerMeters,
             }
         },
-        "includedType": "restaurant",
+        "minRating": minRating,
+        "includedType": includedType,
     }, headers={
         "Content-Type": "application/json",
         "X-Goog-Api-Key": os.getenv('GOOGLE_API_KEY'),
-        'X-Goog-FieldMask': 'nextPageToken,places.id,places.displayName,places.location,places.formattedAddress,places.priceLevel',
+        'X-Goog-FieldMask': 'nextPageToken,places.rating,places.id,places.displayName,places.location,places.formattedAddress,places.priceLevel',
     })
     return searchResults.json()
 
@@ -49,6 +54,8 @@ def resturantSearch(request):
     pageToken = request.GET.get('pageToken', None)
     searchQuery = request.GET.get('q', None)
     latLon = (request.GET.get('lat', None), request.GET.get("lon", None))
+    includedType = request.GET.get('includedType', "restaurant")
+    minRating = int(request.GET.get("minRating", "1"))
     address = "Atlanta"
     if (latLon[0] != None and len(latLon[0]) > 0):
         try:
@@ -66,7 +73,7 @@ def resturantSearch(request):
         radius = 5
     if (searchQuery == None):
         return render(request, 'restaurants/search.html')
-    searchResults = getPlacesSearch(searchQuery, pageToken, latLon, radius)
+    searchResults = getPlacesSearch(searchQuery, pageToken, latLon, radius, includedType, minRating)
     if (pageToken != None):
         context = {
             "query": searchQuery,
@@ -88,6 +95,7 @@ def resturantSearch(request):
 
 
 # based on https://developers.google.com/maps/documentation/places/web-service/place-details
+@cache
 def get_restaurant_details(place_id):
     detailsResult = requests.get(f'https://places.googleapis.com/v1/places/{place_id}',
     headers={
@@ -101,6 +109,7 @@ def get_restaurant_details(place_id):
 def restaurant_detail_view(request, place_id):
     details = get_restaurant_details(place_id)
     if request.method == "POST" and request.user.is_authenticated:
+        form = ReviewForm(request.POST)
         action = request.POST.get('action')
         if action == 'add_to_favorites':
             Restaurant.objects.get_or_create(
@@ -121,8 +130,7 @@ def restaurant_detail_view(request, place_id):
             ).delete()
             return JsonResponse({'success': True})
 
-        form = ReviewForm(request.POST)
-        if action == 'create_a_review' and form.is_valid():
+        elif action == 'create_a_review' and form.is_valid():
             Restaurant.objects.get_or_create(
                 id=place_id,
                 name=details["displayName"]['text'],

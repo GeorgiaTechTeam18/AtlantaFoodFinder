@@ -2,7 +2,22 @@
     <li>
         <a href="details/{{ restaurant.id }}">
             <h2>{{ restaurant.displayName.text }}</h2>
-            <div>{{ restaurant.priceLevel }}</div>
+            <div>
+                {% if restaurant.priceLevel == "PRICE_LEVEL_INEXPENSIVE" %}
+                    $
+                {% endif %}
+
+                {% if restaurant.priceLevel == "PRICE_LEVEL_MODERATE" %}
+                    $$
+                {% endif %}
+                {% if restaurant.priceLevel == "PRICE_LEVEL_EXPENSIVE" %}
+                    $$$
+                {% endif %}
+                {% if restaurant.priceLevel == "PRICE_LEVEL_VERY_EXPENSIVE" %}
+                    $$$$
+                {% endif %}
+                <span>{{ restaurant.rating }} Stars</span>
+            </div>
             <div>{{ restaurant.formattedAddress }}</div>
             <div>{{ restaurant.shortFormattedAddress }}</div>
         </a>
