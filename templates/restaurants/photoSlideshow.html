@@ -7,7 +7,7 @@
     {% for photo in photos %}
         <div class="mySlides fade">
             <div class="numbertext">{{ forloop.counter }} / {{ photos|length }}</div>
-            <img src="https://places.googleapis.com/v1/{{ photo.name }}/media?key={{ GOOGLE_MAPS_API_KEY }}&max_width_px=1080" style="width:100%">
+            <img loading="lazy" src="https://places.googleapis.com/v1/{{ photo.name }}/media?key={{ GOOGLE_MAPS_API_KEY }}&max_width_px=1080" style="width:100%">
         </div>
     {% endfor %}
 
