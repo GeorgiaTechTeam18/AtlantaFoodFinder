@@ -16,7 +16,7 @@
                 {% endif %}
                 </button>
             {% else %}
-                <i>Sign in to be able to favorite restaurants</i>
+                <button onclick="window.location.href='{% url 'signin' %}'">Sign in to be able to favorite restaurants</button>
             {% endif %}
             <p><strong>Cuisine Type:</strong> {{ cuisineType }}</p>
             <p><strong>Contact Information:</strong> {{ contactInformation }}</p>
@@ -58,7 +58,7 @@
                         <button type="submit">Submit</button>
                     </form>
                 {% else %}
-                    <i>Sign in to add your own reviews</i>
+                    <button onclick="window.location.href='{% url 'signin' %}'">Sign in to add your own reviews</button>
                 {% endif %}
             </div>
 
