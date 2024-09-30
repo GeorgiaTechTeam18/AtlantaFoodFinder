@@ -40,6 +40,7 @@ def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5,
                 "radius": radius * milesPerMeters,
             }
         },
+        "minRating": minRating,
         "includedType": includedType,
     }, headers={
         "Content-Type": "application/json",
