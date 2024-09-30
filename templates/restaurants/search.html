@@ -18,6 +18,14 @@
             <option value="10">10 Miles</option>
             <option value="20">20 Miles</option>
         </select>
+        <label for="rating">Rating</label>
+        <select name="rating" id="rating">
+            <option selected="selected" value="1">1 Star</option>
+            <option value="2">2 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="5">5 Stars</option>
+        </select>
         <input type="hidden" id="inputLat" name="lat"/>
         <input type="hidden" id="inputLon" name="lon"/>
     </form>
@@ -181,6 +189,10 @@
 
         if (urlParams.has("radius") && urlParams.get("radius").length > 0) {
             document.getElementById("radius").value = urlParams.get("radius")
+        }
+        
+        if (urlParams.has("rating") && urlParams.get("rating").length > 0) {
+            document.getElementById("rating").value = urlParams.get("rating")
         }
     </script>
 {% endblock %}
