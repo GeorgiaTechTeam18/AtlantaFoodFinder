@@ -143,7 +143,7 @@ def restaurant_detail_view(request, place_id):
     context = {
         'place_id': place_id,
         'form': form,
-        'cuisineType': ", ".join(details["types"]),
+        'cuisineType': ", ".join(details["types"]).title().replace("_", " "),
         'contactInformation': details["nationalPhoneNumber"],
         'address': details["formattedAddress"],
         'rating': details["rating"],
