@@ -35,8 +35,9 @@
             {{ form.password2.errors }}
             {{ form.password2 }}
         </div>
-
-        <button type="submit">Register</button> 
-        <a href="{% url 'signin' %}">Sign In instead</a>
+        <span class="clearfix">
+            <button type="submit">Register</button> 
+            <a href="{% url 'signin' %}">Sign In instead</a>
+        </span>
     </form>
 {% endblock %}

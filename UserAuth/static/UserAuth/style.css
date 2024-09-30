@@ -71,6 +71,12 @@ nav li a:hover {
   float: right;
 }
 
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 @media screen and (max-width: 600px) {
   .authForm {
     padding: .5em;

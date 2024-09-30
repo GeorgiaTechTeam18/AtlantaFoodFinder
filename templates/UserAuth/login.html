@@ -10,7 +10,9 @@
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required><br>
 
-        <button type="submit" name="signin" id="signin">Sign in</button>
-        <a href="{% url 'register' %}">Register a new account</a>
+        <span class="clearfix">
+            <button type="submit" name="signin" id="signin">Sign in</button>
+            <a href="{% url 'register' %}">Register a new account</a>
+        </span>
     </form>
 {% endblock %}
