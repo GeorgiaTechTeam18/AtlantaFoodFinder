@@ -27,10 +27,10 @@
             <option value="3">3 Stars</option>
             <option value="4">4 Stars</option>
         </select>
+        <button id="geoLocationButton">Search with current location</button>
         <input type="hidden" id="inputLat" name="lat"/>
         <input type="hidden" id="inputLon" name="lon"/>
     </form>
-    <button id="geoLocationButton">Search with current location</button>
     <span id="status"></span>
     {% if query%}
         <div>Showing results for {{ address }}</div>
