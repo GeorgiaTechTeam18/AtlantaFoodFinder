@@ -67,7 +67,7 @@
                     <li>
                         <div class="reviewHeader">
                             {{ review.user.first_name }} {{ review.user.last_name }}<br>
-                            {{ review.star_rating }} Stars - {{ review.title }}
+                            {% include 'restaurants/ratingToStars.html' with rating=review.star_rating %} - {{ review.title }}
                         </div>
                         <p>{{ review.review_text }}</p>
                     </li>
