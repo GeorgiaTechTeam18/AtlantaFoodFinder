@@ -118,6 +118,11 @@ def get_restaurant_details(place_id):
     })
     return detailsResult.json()
 
+# uses a set for fast access
+validCuisineTypes = {"american_restaurant", "bakery", "bar", "barbecue_restaurant", "brazilian_restaurant", "breakfast_restaurant", "brunch_restaurant", "cafe", "chinese_restaurant", "coffee_shop", "fast_food_restaurant", "french_restaurant", "greek_restaurant", "hamburger_restaurant", "ice_cream_shop", "indian_restaurant", "indonesian_restaurant", "italian_restaurant", "japanese_restaurant", "korean_restaurant", "lebanese_restaurant", "mediterranean_restaurant", "mexican_restaurant", "middle_eastern_restaurant", "pizza_restaurant", "ramen_restaurant", "sandwich_shop", "seafood_restaurant", "spanish_restaurant", "steak_house", "sushi_restaurant", "thai_restaurant", "turkish_restaurant", "vegan_restaurant", "vegetarian_restaurant", "vietnamese_restaurant"}
+def isCuisine(type):
+    return type in validCuisineTypes
+
 def restaurant_detail_view(request, place_id):
     details = get_restaurant_details(place_id)
     if request.method == "POST" and request.user.is_authenticated:
@@ -163,7 +168,9 @@ def restaurant_detail_view(request, place_id):
     context = {
         'place_id': place_id,
         'form': form,
-        'cuisineType': ", ".join(details["types"]).title().replace("_", " "),
+        'cuisineType': ", ".join(filter(isCuisine, details["types"])).title().replace("_", " "),
+        'offersTakeaway': "meal_takeaway" in details["types"],
+        'offersDelivery': "meal_delivery" in details["types"],
         'contactInformation': details["nationalPhoneNumber"],
         'address': details["formattedAddress"],
         'rating': details["rating"],
@@ -171,7 +178,6 @@ def restaurant_detail_view(request, place_id):
         'numRatings': details["userRatingCount"],
         'name': details["displayName"]['text'],
         'localReviews' : reviews,
-
         'reviews': details["reviews"],
         'lat': details["location"]["latitude"],
         'lon': details["location"]["longitude"],

@@ -23,7 +23,11 @@
             <p><strong>Address:</strong> {{ address }}</p>
             <p><strong>Rating:</strong> {{ rating }}</p>
             <p><strong>Number of Ratings:</strong> {{ numRatings }}</p>
-            
+            <p>
+                {% if offersTakeaway %}<strong>Offers Takeaway 📦</strong>{% endif %}
+                {% if offersDelivery %}<strong>Offers Delivery 🚚</strong>{% endif %}
+            </p>
+
             <h2>Opening Hours</h2>
             <ul>
                 {% for hour in openingHours %}
