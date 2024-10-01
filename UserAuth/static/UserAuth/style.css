@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Futura,Trebuchet MS,Arial,sans-serif;
 }
 
 /* Css for defining sections */
@@ -87,4 +88,22 @@ nav li a:hover {
 /* profile page styles */
 .review {
   margin-top: 1em;
+}
+
+/* index page styles */
+.featuresAdContainer {
+  display: grid;
+  width: 100%;
+  gap: 1em;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  max-width: 1000px;
+  margin: auto;
+  margin-top: 1em;
+  text-align: justify;
+}
+
+.featuresAd img {
+  width: 100%;
+  padding: 1.25em;
+  filter: drop-shadow(0 0 0.75rem crimson);
 }

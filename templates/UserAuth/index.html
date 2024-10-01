@@ -1,6 +1,23 @@
 {% extends 'UserAuth/base.html' %}
-
+{% load static %}
 {% block body %}
-    <h2>Welcome to ATL Food Finder!</h2>
-    
+    <h1>Welcome to ATL Food Finder!</h1>
+    <div class="featuresAdContainer">
+        <div class="featuresAd">
+            <h2>Search for restaurants in ATL or near you</h2>
+            <img src="{% static 'UserAuth/images/search.png' %}">
+        </div>
+        <div class="featuresAd">
+            <h2>Create a list of your favorite restaurants</h2>
+            <img src="{% static 'UserAuth/images/favorites.png' %}">
+        </div>
+        <div class="featuresAd">
+            <h2>Leave reviews to help fellow users choose restaurants</h2>
+            <img src="{% static 'UserAuth/images/reviews.png' %}">
+        </div>
+        <div class="featuresAd">
+            <h2>Find important details about restaurants like operating hours</h2>
+            <img src="{% static 'UserAuth/images/details.png' %}">
+        </div>
+    </div>
 {% endblock %}
