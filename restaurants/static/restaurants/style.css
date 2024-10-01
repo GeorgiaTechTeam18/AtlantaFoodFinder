@@ -21,6 +21,10 @@
     padding-left: 2em;
 }
 
+#searchResultsList a div {
+    color: black;
+}
+
 .moreButton {
     border-radius: 0px;
     padding: 1em;

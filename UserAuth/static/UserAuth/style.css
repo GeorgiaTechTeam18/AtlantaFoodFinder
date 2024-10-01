@@ -83,3 +83,8 @@ nav li a:hover {
     width: calc(100% - 2em);
   }
 }
+
+/* profile page styles */
+.review {
+  margin-top: 1em;
+}

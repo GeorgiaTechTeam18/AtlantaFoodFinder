@@ -78,7 +78,7 @@
                             <img class="reviewerPhoto" src="{{ review.authorAttribution.photoUri }}">
                             {{ review.authorAttribution.displayName }}<br>
                         </div>
-                        {{ review.rating }} Stars<br>
+                        {% include 'restaurants/ratingToStars.html' with rating=review.rating %}<br>
                         <p>{{ review.text.text }}</p>
                     </li>
                 {% endfor %}

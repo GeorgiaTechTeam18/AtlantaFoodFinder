@@ -16,7 +16,7 @@
                 {% if restaurant.priceLevel == "PRICE_LEVEL_VERY_EXPENSIVE" %}
                     $$$$
                 {% endif %}
-                <span>{{ restaurant.rating }} Stars</span>
+                <span>{% include 'restaurants/ratingToStars.html' with rating=restaurant.rating %}</span>
             </div>
             <div>{{ restaurant.formattedAddress }}</div>
             <div>{{ restaurant.shortFormattedAddress }}</div>

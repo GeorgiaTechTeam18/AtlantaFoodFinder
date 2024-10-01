@@ -32,7 +32,7 @@
                         </a>
                     </h3>
                     <h2>{{ review.title }}</h2>
-                    <p><strong>Rating:</strong> {{ review.star_rating }} stars</p>
+                    <p><strong>Rating:</strong> {% include 'restaurants/ratingToStars.html' with rating=review.star_rating%}</p>
                     <p>{{ review.review_text }}</p>
                     
                 </div>
