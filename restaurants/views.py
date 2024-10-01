@@ -1,3 +1,4 @@
+import math
 from xml.etree.ElementInclude import include
 
 from django.shortcuts import render, redirect
@@ -12,7 +13,13 @@ from UserAuth.models import Review, User, UserRestaurant, Restaurant
 
 load_dotenv()
 milesPerMeters = 1609.34
+milesPerKM = milesPerMeters/1000
+r_earth = 6378
 
+def addMileToLonDiff(lat, miles):
+    return (miles * milesPerKM) / (math.cos(lat*math.pi/180) * 69)
+def addMileToLatDiff(miles):
+    return miles / (69) # there are about 69 miles / degree of lat
 
 def getReverseGeocodedAddress(latLon):
     try:
@@ -27,20 +34,25 @@ def getReverseGeocodedAddress(latLon):
 
 @cache
 def getPlacesSearch(query, pagetoken="", latLon=(33.77457, -84.38907), radius=5, includedType="restaurant", minRating=1):
+    latDifference = abs(addMileToLatDiff(radius))
+    lonDifference = abs(addMileToLonDiff(latLon[0], radius))
     searchResults = requests.post('https://places.googleapis.com/v1/places:searchText', json={
         "pageToken": pagetoken,
         "textQuery": query,
         "pageSize": 10,
-        "locationBias": {
-            "circle": {
-                "center": {
-                    "latitude": latLon[0],
-                    "longitude": latLon[1],
+        "locationRestriction": {
+            "rectangle": {
+                "low": {
+                    "latitude": latLon[0]-latDifference,
+                    "longitude": latLon[1]-lonDifference,
                 },
-                "radius": radius * milesPerMeters,
+                "high": {
+                    "latitude": latLon[0]+latDifference,
+                    "longitude": latLon[1]+lonDifference,
+                }
             }
         },
-        "minRating": minRating,
+    "minRating": minRating,
         "includedType": includedType,
     }, headers={
         "Content-Type": "application/json",
