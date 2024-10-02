@@ -12,9 +12,14 @@ https://github.com/GeorgiaTechTeam18/AtlantaFoodFinder
 https://github.com/orgs/GeorgiaTechTeam18/projects/1/views/2
 
 ## command reference
+#### run the project
 ```bash
-pip3 freeze > requirements.txt
+. .venv/bin/activate
 python manage.py runserver
 python manage.py migrate
-. .venv/bin/activate
+```
+#### regenerate files after modifications
+```bash
+pip3 freeze > requirements.txt
+python manage.py makemigrations
 ```
